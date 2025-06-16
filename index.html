@@ -10,140 +10,604 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            /* Background from birthday animation */
-            background-image: radial-gradient(#374566, #010203);
-            overflow-x: hidden; /* Allow vertical scroll, hide horizontal */
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
+            overflow-x: hidden;
+            position: relative;
         }
 
-        /* Styles from bday.html for the balloon animation */
+        /* Enhanced background with animated particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.3) 0%, transparent 50%),
+                linear-gradient(135deg, #374566, #010203);
+            z-index: -2;
+            animation: backgroundShift 20s ease-in-out infinite;
+        }
+
+        @keyframes backgroundShift {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+
+        /* Floating particles */
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+
+        .particle:nth-child(1) { width: 4px; height: 4px; left: 10%; animation-delay: 0s; }
+        .particle:nth-child(2) { width: 6px; height: 6px; left: 20%; animation-delay: 2s; }
+        .particle:nth-child(3) { width: 3px; height: 3px; left: 30%; animation-delay: 4s; }
+        .particle:nth-child(4) { width: 5px; height: 5px; left: 40%; animation-delay: 6s; }
+        .particle:nth-child(5) { width: 4px; height: 4px; left: 50%; animation-delay: 8s; }
+        .particle:nth-child(6) { width: 6px; height: 6px; left: 60%; animation-delay: 10s; }
+        .particle:nth-child(7) { width: 3px; height: 3px; left: 70%; animation-delay: 12s; }
+        .particle:nth-child(8) { width: 5px; height: 5px; left: 80%; animation-delay: 14s; }
+        .particle:nth-child(9) { width: 4px; height: 4px; left: 90%; animation-delay: 16s; }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Enhanced balloon container with better mobile support */
         .balloon-container {
             width: 100%;
             position: absolute;
             top: 0;
             left: 0;
             height: 50vh;
-            z-index: 1;
-            pointer-events: none; /* Allow clicking through balloons */
-            margin-bottom: 50px; /* Ensure balloons don't overlap with content */
+            z-index: 5;
+            pointer-events: none;
+            margin-bottom: 50px;
             display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 20px;
         }
 
         .balloon {
-            width: 738px;
+            width: min(738px, 90vw);
             margin: 0 auto;
-            padding-top: 30px;
+            padding-top: 20px;
             position: relative;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
         }
+
         .balloon > div {
-            width: 104px;
-            height: 140px;
+            width: clamp(60px, 15vw, 104px);
+            height: clamp(80px, 20vw, 140px);
             background: rgba(182, 15, 97, 0.9);
             border-radius: 80%;
             margin: 0 auto;
-            position: absolute;
+            position: relative;
             padding: 10px;
             box-shadow: inset 17px 7px 10px rgba(182, 15, 97, 0.9);
             transform-origin: bottom center;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
         }
-        .balloon > div:nth-child(1) { background: rgba(182, 15, 97, 0.9); left: 0; box-shadow: inset 10px 10px 10px rgba(135, 11, 72, 0.9); animation: balloon1 6s ease-in-out infinite; }
-        .balloon > div:nth-child(1):before { color: rgba(182, 15, 97, 0.9); }
-        .balloon > div:nth-child(2) { background: rgba(242, 112, 45, 0.9); left: 120px; box-shadow: inset 10px 10px 10px rgba(222, 85, 14, 0.9); animation: balloon2 6s ease-in-out infinite; }
-        .balloon > div:nth-child(2):before { color: rgba(242, 112, 45, 0.9); }
-        .balloon > div:nth-child(3) { background: rgba(45, 181, 167, 0.9); left: 240px; box-shadow: inset 10px 10px 10px rgba(35, 140, 129, 0.9); animation: balloon4 6s ease-in-out infinite; }
-        .balloon > div:nth-child(3):before { color: rgba(45, 181, 167, 0.9); }
-        .balloon > div:nth-child(4) { background: rgba(190, 61, 244, 0.9); left: 360px; box-shadow: inset 10px 10px 10px rgba(173, 14, 240, 0.9); animation: balloon1 5s ease-in-out infinite; }
-        .balloon > div:nth-child(4):before { color: rgba(190, 61, 244, 0.9); }
-        .balloon > div:nth-child(5) { background: rgba(180, 224, 67, 0.9); left: 480px; box-shadow: inset 10px 10px 10px rgba(158, 206, 34, 0.9); animation: balloon3 5s ease-in-out infinite; }
-        .balloon > div:nth-child(5):before { color: rgba(180, 224, 67, 0.9); }
-        .balloon > div:nth-child(6) { background: rgba(242, 194, 58, 0.9); left: 600px; box-shadow: inset 10px 10px 10px rgba(234, 177, 15, 0.9); animation: balloon2 3s ease-in-out infinite; }
-        .balloon > div:nth-child(6):before { color: rgba(242, 194, 58, 0.9); }
-        .balloon > div:before { content:"▲"; position: absolute; bottom: -11px; left: 52px; font-size: 1em; }
-        .balloon-text { font-family:'Wendy One', sans-serif; font-size: 4.8em; color: white; position: relative; top: 30px; left: 50%; margin-left: -27px; text-transform: uppercase; }
 
-        /* Balloon Animations */
-        @keyframes balloon1 { 0%, 100% { transform: translateY(0) rotate(-6deg); } 50% { transform: translateY(-20px) rotate(8deg); } }
-        @keyframes balloon2 { 0%, 100% { transform: translateY(0) rotate(6deg); } 50% { transform: translateY(-30px) rotate(-8deg); } }
-        @keyframes balloon3 { 0%, 100% { transform: translate(0, -10px) rotate(6deg); } 50% { transform: translate(-20px, 30px) rotate(-8deg); } }
-        @keyframes balloon4 { 0%, 100% { transform: translate(10px, -10px) rotate(-8deg); } 50% { transform: translate(-15px, 10px) rotate(10deg); } }
+        .balloon > div:hover {
+            transform: scale(1.1) translateY(-10px);
+            filter: brightness(1.2);
+        }
 
-        /* Main content styling */
+        .balloon > div:nth-child(1) { 
+            background: linear-gradient(135deg, rgba(182, 15, 97, 0.9), rgba(220, 38, 127, 0.9));
+            box-shadow: inset 10px 10px 20px rgba(135, 11, 72, 0.9), 0 10px 30px rgba(182, 15, 97, 0.3);
+            animation: balloon1 6s ease-in-out infinite, glow 3s ease-in-out infinite alternate;
+        }
+        .balloon > div:nth-child(2) { 
+            background: linear-gradient(135deg, rgba(242, 112, 45, 0.9), rgba(255, 140, 70, 0.9));
+            box-shadow: inset 10px 10px 20px rgba(222, 85, 14, 0.9), 0 10px 30px rgba(242, 112, 45, 0.3);
+            animation: balloon2 6s ease-in-out infinite, glow 3s ease-in-out infinite alternate;
+            animation-delay: 0.5s;
+        }
+        .balloon > div:nth-child(3) { 
+            background: linear-gradient(135deg, rgba(45, 181, 167, 0.9), rgba(70, 210, 195, 0.9));
+            box-shadow: inset 10px 10px 20px rgba(35, 140, 129, 0.9), 0 10px 30px rgba(45, 181, 167, 0.3);
+            animation: balloon4 6s ease-in-out infinite, glow 3s ease-in-out infinite alternate;
+            animation-delay: 1s;
+        }
+        .balloon > div:nth-child(4) { 
+            background: linear-gradient(135deg, rgba(190, 61, 244, 0.9), rgba(210, 90, 255, 0.9));
+            box-shadow: inset 10px 10px 20px rgba(173, 14, 240, 0.9), 0 10px 30px rgba(190, 61, 244, 0.3);
+            animation: balloon1 5s ease-in-out infinite, glow 3s ease-in-out infinite alternate;
+            animation-delay: 1.5s;
+        }
+        .balloon > div:nth-child(5) { 
+            background: linear-gradient(135deg, rgba(180, 224, 67, 0.9), rgba(200, 240, 90, 0.9));
+            box-shadow: inset 10px 10px 20px rgba(158, 206, 34, 0.9), 0 10px 30px rgba(180, 224, 67, 0.3);
+            animation: balloon3 5s ease-in-out infinite, glow 3s ease-in-out infinite alternate;
+            animation-delay: 2s;
+        }
+        .balloon > div:nth-child(6) { 
+            background: linear-gradient(135deg, rgba(242, 194, 58, 0.9), rgba(255, 215, 80, 0.9));
+            box-shadow: inset 10px 10px 20px rgba(234, 177, 15, 0.9), 0 10px 30px rgba(242, 194, 58, 0.3);
+            animation: balloon2 3s ease-in-out infinite, glow 3s ease-in-out infinite alternate;
+            animation-delay: 2.5s;
+        }
+
+        .balloon > div:before { 
+            content:"▲"; 
+            position: absolute; 
+            bottom: -11px; 
+            left: 50%; 
+            transform: translateX(-50%);
+            font-size: clamp(0.8em, 2vw, 1em); 
+            color: inherit;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .balloon-text { 
+            font-family:'Wendy One', sans-serif; 
+            font-size: clamp(2em, 8vw, 4.8em); 
+            color: white; 
+            position: relative; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%);
+            text-transform: uppercase;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            animation: textGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes textGlow {
+            0% { text-shadow: 0 2px 10px rgba(0,0,0,0.5), 0 0 20px rgba(255,255,255,0.3); }
+            100% { text-shadow: 0 2px 10px rgba(0,0,0,0.5), 0 0 30px rgba(255,255,255,0.6); }
+        }
+
+        @keyframes glow {
+            0% { box-shadow: inset 10px 10px 20px rgba(0,0,0,0.3), 0 10px 30px rgba(255,255,255,0.1); }
+            100% { box-shadow: inset 10px 10px 20px rgba(0,0,0,0.3), 0 15px 40px rgba(255,255,255,0.2); }
+        }
+
+        /* Enhanced balloon animations with more realistic physics */
+        @keyframes balloon1 { 
+            0%, 100% { transform: translateY(0) rotate(-6deg) scale(1); } 
+            25% { transform: translateY(-15px) rotate(4deg) scale(1.02); }
+            50% { transform: translateY(-25px) rotate(8deg) scale(1.05); } 
+            75% { transform: translateY(-10px) rotate(-2deg) scale(1.02); }
+        }
+        @keyframes balloon2 { 
+            0%, 100% { transform: translateY(0) rotate(6deg) scale(1); } 
+            25% { transform: translateY(-20px) rotate(-3deg) scale(1.03); }
+            50% { transform: translateY(-35px) rotate(-10deg) scale(1.06); } 
+            75% { transform: translateY(-15px) rotate(2deg) scale(1.02); }
+        }
+        @keyframes balloon3 { 
+            0%, 100% { transform: translate(0, -10px) rotate(6deg) scale(1); } 
+            25% { transform: translate(-15px, 15px) rotate(-4deg) scale(1.04); }
+            50% { transform: translate(-25px, 35px) rotate(-12deg) scale(1.07); } 
+            75% { transform: translate(-10px, 20px) rotate(3deg) scale(1.03); }
+        }
+        @keyframes balloon4 { 
+            0%, 100% { transform: translate(10px, -10px) rotate(-8deg) scale(1); } 
+            25% { transform: translate(-10px, 5px) rotate(6deg) scale(1.03); }
+            50% { transform: translate(-20px, 15px) rotate(12deg) scale(1.06); } 
+            75% { transform: translate(-5px, 2px) rotate(-3deg) scale(1.02); }
+        }
+
+        /* Content wrapper with parallax effect */
         .content-wrapper {
             position: relative;
             z-index: 10;
+            transform-style: preserve-3d;
         }
 
-        /* Photo Album Styles */
+        .parallax-section {
+            transform: translateZ(0);
+            transition: transform 0.1s ease-out;
+        }
+
+        /* Enhanced main content styling */
+        .main-content-card {
+            background: rgba(31, 41, 55, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.25),
+                0 0 0 1px rgba(255, 255, 255, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-content-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.8s ease;
+        }
+
+        .main-content-card:hover::before {
+            left: 100%;
+        }
+
+        .main-content-card:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 
+                0 35px 60px -12px rgba(0, 0, 0, 0.35),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        /* Enhanced counter styling */
+        .counter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+
+        @media (max-width: 640px) {
+            .counter-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+        }
+
+        .counter-item {
+            background: rgba(55, 65, 81, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .counter-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .counter-item:hover::before {
+            transform: scaleX(1);
+        }
+
+        .counter-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .counter-number {
+            background: linear-gradient(135deg, #22d3ee, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: numberPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes numberPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Photo Album Enhanced Styles */
         .photo-album {
-            padding: 4rem 2rem;
+            padding: 4rem 1rem;
             max-width: 1400px;
             margin: 4rem auto 0 auto;
             position: relative;
             z-index: 20;
         }
+
+        .photo-album::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+            animation: slideInFromTop 1s ease-out;
+        }
+
+        @keyframes slideInFromTop {
+            from { width: 0; }
+            to { width: 100px; }
+        }
+
         .photo-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
         }
+
+        @media (max-width: 640px) {
+            .photo-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
         .photo-item {
             opacity: 0;
-            transform: translateY(50px) scale(0.9);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-            border-radius: 1rem;
+            transform: translateY(100px) scale(0.8) rotateX(15deg);
+            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+            border-radius: 1.5rem;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border: 3px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                0 20px 40px rgba(0,0,0,0.3),
+                0 0 0 1px rgba(255,255,255,0.1);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            backdrop-filter: blur(10px);
         }
+
+        .photo-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .photo-item:hover::before {
+            opacity: 1;
+        }
+
         .photo-item.is-visible {
             opacity: 1;
-            transform: translateY(0) scale(1);
+            transform: translateY(0) scale(1) rotateX(0deg);
         }
+
         .photo-item img {
             width: 100%;
-            height: 100%;
+            height: 250px;
             object-fit: cover;
-            transition: transform 0.5s ease;
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            filter: brightness(0.9) contrast(1.1);
         }
+
+        .photo-item:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 
+                0 30px 60px rgba(0,0,0,0.4),
+                0 0 0 1px rgba(255,255,255,0.2);
+        }
+
         .photo-item:hover img {
-            transform: scale(1.1);
+            transform: scale(1.15);
+            filter: brightness(1.1) contrast(1.2);
         }
-        /* Style for the unmute button */
-        #unmuteButton {
+
+        /* Enhanced music button */
+        .music-button {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background-color: #007bff;
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 12px 24px;
+            border-radius: 50px;
             cursor: pointer;
             font-size: 1em;
-            z-index: 1000; /* Ensure it's on top */
+            font-weight: 600;
+            z-index: 1000;
+            box-shadow: 
+                0 10px 30px rgba(102, 126, 234, 0.4),
+                0 0 0 1px rgba(255,255,255,0.1);
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
+
+        .music-button:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 
+                0 15px 40px rgba(102, 126, 234, 0.6),
+                0 0 0 1px rgba(255,255,255,0.2);
+        }
+
+        .music-button:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .music-button.playing {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            box-shadow: 
+                0 10px 30px rgba(240, 147, 251, 0.4),
+                0 0 0 1px rgba(255,255,255,0.1);
+        }
+
+        .music-button.playing:hover {
+            box-shadow: 
+                0 15px 40px rgba(240, 147, 251, 0.6),
+                0 0 0 1px rgba(255,255,255,0.2);
+        }
+
+        /* Music icon animation */
+        .music-icon {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        .music-button.playing .music-icon {
+            animation: musicPulse 1s ease-in-out infinite;
+        }
+
+        @keyframes musicPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        /* Scroll progress indicator */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            z-index: 9999;
+            transition: width 0.1s ease;
+        }
+
+        /* Enhanced responsive design */
+        @media (max-width: 768px) {
+            .balloon {
+                padding-top: 10px;
+            }
+            
+            .main-content-card {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+            
+            .music-button {
+                bottom: 15px;
+                right: 15px;
+                padding: 10px 20px;
+                font-size: 0.9em;
+            }
+        }
+
+        /* Loading animation */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        .loading-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Staggered animation delays for photos */
+        .photo-item:nth-child(1) { transition-delay: 0.1s; }
+        .photo-item:nth-child(2) { transition-delay: 0.2s; }
+        .photo-item:nth-child(3) { transition-delay: 0.3s; }
+        .photo-item:nth-child(4) { transition-delay: 0.4s; }
+        .photo-item:nth-child(5) { transition-delay: 0.5s; }
+        .photo-item:nth-child(6) { transition-delay: 0.6s; }
+        .photo-item:nth-child(7) { transition-delay: 0.7s; }
+        .photo-item:nth-child(8) { transition-delay: 0.8s; }
+        .photo-item:nth-child(9) { transition-delay: 0.9s; }
+        .photo-item:nth-child(10) { transition-delay: 1s; }
+        .photo-item:nth-child(11) { transition-delay: 1.1s; }
+        .photo-item:nth-child(12) { transition-delay: 1.2s; }
+        .photo-item:nth-child(13) { transition-delay: 1.3s; }
+        .photo-item:nth-child(14) { transition-delay: 1.4s; }
+        .photo-item:nth-child(15) { transition-delay: 1.5s; }
+        .photo-item:nth-child(16) { transition-delay: 1.6s; }
+        .photo-item:nth-child(17) { transition-delay: 1.7s; }
+        .photo-item:nth-child(18) { transition-delay: 1.8s; }
+        .photo-item:nth-child(19) { transition-delay: 1.9s; }
+        .photo-item:nth-child(20) { transition-delay: 2s; }
+        .photo-item:nth-child(21) { transition-delay: 2.1s; }
     </style>
 </head>
-<!--To stop music from playing Enter this is Console =
-const music = document.getElementById('background-music');
-if (music) {
-    music.pause();
-    music.currentTime = 0;
-}
-To start music again Enter this in Console =
-const music = document.getElementById('background-music');
-if (music) {
-    music.play();
-    music.currentTime = 0;
-}
-
--->>
 <body class="min-h-screen">
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- Floating Particles -->
+    <div class="floating-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
 
     <audio id="background-music" src="happybdaybgs.mp3" loop muted></audio>
 
-    <button id="unmuteButton" style="display: none;">Play Music</button>
+    <button id="musicButton" class="music-button">
+        <svg class="music-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+        </svg>
+        <span id="musicButtonText">Play Music</span>
+    </button>
 
-    <div class="balloon-container">
+    <div class="balloon-container" id="balloonContainer">
         <div class="balloon">
             <div><span class="balloon-text">☺</span></div>
             <div><span class="balloon-text">B</span></div>
@@ -154,58 +618,79 @@ if (music) {
         </div>
     </div>
 
-    <div class="w-full flex items-center justify-center min-h-screen content-wrapper">
+    <div class="w-full flex items-center justify-center min-h-screen content-wrapper parallax-section">
         <div class="w-full max-w-4xl mx-auto p-4 md:p-8">
-            <div class="bg-gray-800 bg-opacity-70 backdrop-blur-sm shadow-2xl rounded-2xl p-6 md:p-10 border border-gray-700">
-                <h1 class="text-3xl md:text-5xl font-extrabold text-white text-center mb-2">
+            <div class="main-content-card shadow-2xl rounded-2xl p-6 md:p-10">
+                <h1 class="text-3xl md:text-5xl font-extrabold text-white text-center mb-2" style="animation: slideInFromLeft 1s ease-out;">
                     Our Journey So Far
                 </h1>
-                <p class="text-center text-gray-300 mb-8 md:mb-12 text-lg">
+                <p class="text-center text-gray-300 mb-8 md:mb-12 text-lg" style="animation: slideInFromRight 1s ease-out 0.2s both;">
                     Counting every moment since June 26, 2014 at 11:35 AM
                 </p>
-                <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 text-center">
-                    <div class="bg-gray-700 bg-opacity-80 p-4 rounded-lg shadow-inner"><div id="years" class="text-4xl md:text-6xl font-bold text-cyan-400">0</div><div class="text-gray-300 mt-1 text-sm md:text-base">Years</div></div>
-                    <div class="bg-gray-700 bg-opacity-80 p-4 rounded-lg shadow-inner"><div id="months" class="text-4xl md:text-6xl font-bold text-cyan-400">0</div><div class="text-gray-300 mt-1 text-sm md:text-base">Months</div></div>
-                    <div class="bg-gray-700 bg-opacity-80 p-4 rounded-lg shadow-inner"><div id="days" class="text-4xl md:text-6xl font-bold text-cyan-400">0</div><div class="text-gray-300 mt-1 text-sm md:text-base">Days</div></div>
-                    <div class="bg-gray-700 bg-opacity-80 p-4 rounded-lg shadow-inner"><div id="hours" class="text-4xl md:text-6xl font-bold text-cyan-400">0</div><div class="text-gray-300 mt-1 text-sm md:text-base">Hours</div></div>
-                    <div class="bg-gray-700 bg-opacity-80 p-4 rounded-lg shadow-inner"><div id="minutes" class="text-4xl md:text-6xl font-bold text-cyan-400">0</div><div class="text-gray-300 mt-1 text-sm md:text-base">Minutes</div></div>
+                <div class="counter-grid text-center" style="animation: slideInFromBottom 1s ease-out 0.4s both;">
+                    <div class="counter-item p-4 rounded-lg shadow-inner">
+                        <div id="years" class="counter-number text-4xl md:text-6xl font-bold">0</div>
+                        <div class="text-gray-300 mt-1 text-sm md:text-base">Years</div>
+                    </div>
+                    <div class="counter-item p-4 rounded-lg shadow-inner">
+                        <div id="months" class="counter-number text-4xl md:text-6xl font-bold">0</div>
+                        <div class="text-gray-300 mt-1 text-sm md:text-base">Months</div>
+                    </div>
+                    <div class="counter-item p-4 rounded-lg shadow-inner">
+                        <div id="days" class="counter-number text-4xl md:text-6xl font-bold">0</div>
+                        <div class="text-gray-300 mt-1 text-sm md:text-base">Days</div>
+                    </div>
+                    <div class="counter-item p-4 rounded-lg shadow-inner">
+                        <div id="hours" class="counter-number text-4xl md:text-6xl font-bold">0</div>
+                        <div class="text-gray-300 mt-1 text-sm md:text-base">Hours</div>
+                    </div>
+                    <div class="counter-item p-4 rounded-lg shadow-inner">
+                        <div id="minutes" class="counter-number text-4xl md:text-6xl font-bold">0</div>
+                        <div class="text-gray-300 mt-1 text-sm md:text-base">Minutes</div>
+                    </div>
                 </div>
-                <h2 class="text-center text-white text-4xl mt-10" style="font-family:'Wendy One', sans-serif;">Kartik</h2>
+                <h2 class="text-center text-white text-4xl mt-10" style="font-family:'Wendy One', sans-serif; animation: slideInFromBottom 1s ease-out 0.6s both;">Kartik</h2>
             </div>
             <h3 class="text-center text-white text-2xl mt-12 animate-pulse">Scroll Down To See The Memories</h3>
         </div>
     </div>
 
-    <section class="photo-album">
-        <h2 class="text-5xl font-bold text-white text-center mb-12" style="font-family:'Wendy One', sans-serif;">Our Photo Album</h2>
-        <div class="photo-grid">
-            <div class="photo-item"><img src="1.jpg" alt="Memory 1"></div>
-<div class="photo-item"><img src="2.jpg" alt="Memory 2"></div>
-<div class="photo-item"><img src="3.jpg" alt="Memory 3"></div>
-<div class="photo-item"><img src="4.jpg" alt="Memory 4"></div>
-<div class="photo-item"><img src="5.jpg" alt="Memory 5"></div>
-<div class="photo-item"><img src="6.jpg" alt="Memory 6"></div>
-<div class="photo-item"><img src="7.jpg" alt="Memory 7"></div>
-<div class="photo-item"><img src="8.jpg" alt="Memory 8"></div>
-<div class="photo-item"><img src="9.jpg" alt="Memory 9"></div>
-<div class="photo-item"><img src="10.jpg" alt="Memory 10"></div>
-<div class="photo-item"><img src="11.jpg" alt="Memory 11"></div>
-<div class="photo-item"><img src="12.jpg" alt="Memory 12"></div>
-<div class="photo-item"><img src="13.jpg" alt="Memory 13"></div>
-<div class="photo-item"><img src="14.jpg" alt="Memory 14"></div>
-<div class="photo-item"><img src="15.jpg" alt="Memory 15"></div>
-<div class="photo-item"><img src="16.jpg" alt="Memory 16"></div>
-<div class="photo-item"><img src="17.jpg" alt="Memory 17"></div>
-<div class="photo-item"><img src="18.jpg" alt="Memory 18"></div>
-<div class="photo-item"><img src="19.jpg" alt="Memory 19"></div>
-<div class="photo-item"><img src="20.jpg" alt="Memory 20"></div>
-<div class="photo-item"><img src="21.jpg" alt="Memory 21"></div>
-
+    <section class="photo-album parallax-section" id="photoAlbum">
+        <h2 class="text-3xl md:text-5xl font-bold text-white text-center mb-12" style="font-family:'Wendy One', sans-serif;">Our Photo Album</h2>
+        <div class="photo-grid" id="photoGrid">
+            <div class="photo-item"><img src="1.jpg" alt="Memory 1" loading="lazy"></div>
+            <div class="photo-item"><img src="2.jpg" alt="Memory 2" loading="lazy"></div>
+            <div class="photo-item"><img src="3.jpg" alt="Memory 3" loading="lazy"></div>
+            <div class="photo-item"><img src="4.jpg" alt="Memory 4" loading="lazy"></div>
+            <div class="photo-item"><img src="5.jpg" alt="Memory 5" loading="lazy"></div>
+            <div class="photo-item"><img src="6.jpg" alt="Memory 6" loading="lazy"></div>
+            <div class="photo-item"><img src="7.jpg" alt="Memory 7" loading="lazy"></div>
+            <div class="photo-item"><img src="8.jpg" alt="Memory 8" loading="lazy"></div>
+            <div class="photo-item"><img src="9.jpg" alt="Memory 9" loading="lazy"></div>
+            <div class="photo-item"><img src="10.jpg" alt="Memory 10" loading="lazy"></div>
+            <div class="photo-item"><img src="11.jpg" alt="Memory 11" loading="lazy"></div>
+            <div class="photo-item"><img src="12.jpg" alt="Memory 12" loading="lazy"></div>
+            <div class="photo-item"><img src="13.jpg" alt="Memory 13" loading="lazy"></div>
+            <div class="photo-item"><img src="14.jpg" alt="Memory 14" loading="lazy"></div>
+            <div class="photo-item"><img src="15.jpg" alt="Memory 15" loading="lazy"></div>
+            <div class="photo-item"><img src="16.jpg" alt="Memory 16" loading="lazy"></div>
+            <div class="photo-item"><img src="17.jpg" alt="Memory 17" loading="lazy"></div>
+            <div class="photo-item"><img src="18.jpg" alt="Memory 18" loading="lazy"></div>
+            <div class="photo-item"><img src="19.jpg" alt="Memory 19" loading="lazy"></div>
+            <div class="photo-item"><img src="20.jpg" alt="Memory 20" loading="lazy"></div>
+            <div class="photo-item"><img src="21.jpg" alt="Memory 21" loading="lazy"></div>
         </div>
     </section>
 
     <script>
-        // --- Age Calculation Logic ---
+        // --- Enhanced Loading Animation ---
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                document.getElementById('loadingOverlay').classList.add('hidden');
+            }, 1500);
+        });
+
+        // --- Enhanced Age Calculation Logic ---
         const startDate = new Date('2014-06-26T11:35:00Z');
         const yearsEl = document.getElementById('years');
         const monthsEl = document.getElementById('months');
@@ -230,83 +715,207 @@ if (music) {
             if (months_diff < 0) { c_years--; months_diff += 12; }
             let years_diff = c_years - s_years;
 
-            yearsEl.textContent = years_diff;
-            monthsEl.textContent = months_diff;
-            daysEl.textContent = days_diff;
-            hoursEl.textContent = hours_diff.toString().padStart(2, '0');
-            minutesEl.textContent = minutes_diff.toString().padStart(2, '0');
+            // Animate number changes
+            animateNumberChange(yearsEl, years_diff);
+            animateNumberChange(monthsEl, months_diff);
+            animateNumberChange(daysEl, days_diff);
+            animateNumberChange(hoursEl, hours_diff.toString().padStart(2, '0'));
+            animateNumberChange(minutesEl, minutes_diff.toString().padStart(2, '0'));
         }
+
+        function animateNumberChange(element, newValue) {
+            if (element.textContent !== newValue.toString()) {
+                element.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    element.textContent = newValue;
+                    element.style.transform = 'scale(1)';
+                }, 150);
+            }
+        }
+
         setInterval(calculateAge, 1000);
         calculateAge();
 
-        // --- Photo Gallery Scroll Animation Logic ---
+        // --- Enhanced Photo Gallery Scroll Animation Logic ---
+        let hasAnimated = new Set();
+
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry, index) => {
+            entries.forEach((entry) => {
                 if (entry.isIntersecting) {
-                    // Apply a staggered delay for a "super animatic" effect
-                    entry.target.style.transitionDelay = `${index * 100}ms`;
-                    entry.target.classList.add('is-visible');
-                    observer.unobserve(entry.target); // Stop observing once visible
+                    const element = entry.target;
+                    element.classList.add('is-visible');
+                    hasAnimated.add(element);
+                } else {
+                    // Reset animation when scrolling back up
+                    const element = entry.target;
+                    if (hasAnimated.has(element)) {
+                        element.classList.remove('is-visible');
+                        // Re-add with a small delay for re-animation
+                        setTimeout(() => {
+                            if (observer && entry.isIntersecting) {
+                                element.classList.add('is-visible');
+                            }
+                        }, 100);
+                    }
                 }
             });
-        }, { threshold: 0.1 }); // Trigger when 10% of the item is visible
+        }, { 
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
 
         const photoItems = document.querySelectorAll('.photo-item');
         photoItems.forEach(item => observer.observe(item));
 
-        // --- Audio Playback with a user-triggered unmute button ---
-        window.onload = function() {
-            console.log("Made on 16th June 2024 by Aditya");
-        console.log("Page loaded, setting up audio playback...");
-            const backgroundMusic = document.getElementById('background-music');
-            const unmuteButton = document.getElementById('unmuteButton');
+        // --- Enhanced Audio Playback with Toggle ---
+        let isPlaying = false;
+        const backgroundMusic = document.getElementById('background-music');
+        const musicButton = document.getElementById('musicButton');
+        const musicButtonText = document.getElementById('musicButtonText');
 
-            if (backgroundMusic) {
-                // Try to play muted audio immediately
-                backgroundMusic.play().catch(error => {
-                    console.log("Muted autoplay prevented (this is common and often fine if we show an unmute button):", error);
-                    // If even muted autoplay is prevented (e.g., in some strict environments),
-                    // ensure the button is visible.
-                    unmuteButton.style.display = 'block';
-                });
+        function updateMusicButton() {
+            if (isPlaying && !backgroundMusic.paused) {
+                musicButton.classList.add('playing');
+                musicButtonText.textContent = 'Stop Music';
+                musicButton.querySelector('.music-icon').innerHTML = `
+                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                `;
+            } else {
+                musicButton.classList.remove('playing');
+                musicButtonText.textContent = 'Play Music';
+                musicButton.querySelector('.music-icon').innerHTML = `
+                    <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                `;
+            }
+        }
 
-                // Show the unmute button if the music is muted after an initial attempt
-                if (backgroundMusic.muted || backgroundMusic.paused) {
-                    unmuteButton.style.display = 'block';
-                }
-
-                // Event listener for the unmute button
-                unmuteButton.addEventListener('click', () => {
-                    if (backgroundMusic.muted) {
-                        backgroundMusic.muted = false;
-                        backgroundMusic.play().catch(error => {
-                            console.log("Failed to play on unmute click:", error);
-                            // This catch block should ideally not be hit after a user click
-                        });
-                        unmuteButton.textContent = "Music On"; // Optional: change button text
-                    } else {
-                         backgroundMusic.muted = true;
-                         unmuteButton.textContent = "Unmute Music"; // Optional: change button text
-                    }
-                    // Hide the button after it's clicked, or change its text to reflect status
-                    unmuteButton.style.display = 'none'; // You might want to keep it visible as a toggle
-                });
-
-                // Optional: Make the button reappear if the music somehow pauses or becomes muted again
-                backgroundMusic.addEventListener('pause', () => {
-                    if (backgroundMusic.muted) {
-                        unmuteButton.style.display = 'block';
-                        unmuteButton.textContent = "Unmute Music";
-                    }
-                });
-                backgroundMusic.addEventListener('volumechange', () => {
-                    if (backgroundMusic.muted && backgroundMusic.paused) { // Check both muted and paused for button display
-                         unmuteButton.style.display = 'block';
-                         unmuteButton.textContent = "Unmute Music";
-                    }
+        musicButton.addEventListener('click', () => {
+            if (isPlaying && !backgroundMusic.paused) {
+                backgroundMusic.pause();
+                isPlaying = false;
+            } else {
+                backgroundMusic.muted = false;
+                backgroundMusic.play().then(() => {
+                    isPlaying = true;
+                }).catch(error => {
+                    console.log("Failed to play audio:", error);
+                    isPlaying = false;
                 });
             }
-        };
+            updateMusicButton();
+        });
+
+        // Initial setup
+        if (backgroundMusic) {
+            backgroundMusic.addEventListener('pause', updateMusicButton);
+            backgroundMusic.addEventListener('play', updateMusicButton);
+            updateMusicButton();
+        }
+
+        // --- Parallax Scrolling Effect ---
+        let ticking = false;
+
+        function updateParallax() {
+            const scrollTop = window.pageYOffset;
+            const balloonContainer = document.getElementById('balloonContainer');
+            const parallaxSections = document.querySelectorAll('.parallax-section');
+            
+            // Balloon parallax
+            if (balloonContainer) {
+                const parallaxSpeed = 0.5;
+                balloonContainer.style.transform = `translateY(${scrollTop * parallaxSpeed}px)`;
+            }
+            
+            // Section parallax
+            parallaxSections.forEach((section, index) => {
+                const speed = 0.1 * (index + 1);
+                section.style.transform = `translateY(${scrollTop * speed}px)`;
+            });
+            
+            ticking = false;
+        }
+
+        function requestParallaxUpdate() {
+            if (!ticking) {
+                requestAnimationFrame(updateParallax);
+                ticking = true;
+            }
+        }
+
+        window.addEventListener('scroll', requestParallaxUpdate);
+
+        // --- Scroll Progress Indicator ---
+        function updateScrollProgress() {
+            const scrollProgress = document.getElementById('scrollProgress');
+            const scrollTop = window.pageYOffset;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            scrollProgress.style.width = scrollPercent + '%';
+        }
+
+        window.addEventListener('scroll', updateScrollProgress);
+
+        // --- Keyboard Shortcuts ---
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && e.target.tagName !== 'INPUT') {
+                e.preventDefault();
+                musicButton.click();
+            }
+        });
+
+        // --- Enhanced CSS Animations for Initial Load ---
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInFromLeft {
+                from { transform: translateX(-100px); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideInFromRight {
+                from { transform: translateX(100px); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideInFromBottom {
+                from { transform: translateY(50px); opacity: 0; }
+                to { transform: translateY(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // --- Enhanced Touch Support for Mobile ---
+        let touchStartY = 0;
+        let touchEndY = 0;
+
+        document.addEventListener('touchstart', e => {
+            touchStartY = e.changedTouches[0].screenY;
+        }, {passive: true});
+
+        document.addEventListener('touchend', e => {
+            touchEndY = e.changedTouches[0].screenY;
+            handleSwipe();
+        }, {passive: true});
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartY - touchEndY;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    // Swipe up - scroll to photo album
+                    document.getElementById('photoAlbum').scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                } else {
+                    // Swipe down - scroll to top
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+        }
+
+        console.log("Enhanced mobile-optimized birthday page loaded successfully! 🎉");
+        console.log("Features: Enhanced animations, parallax scrolling, music toggle, scroll animations, touch gestures");
     </script>
 </body>
 </html>
