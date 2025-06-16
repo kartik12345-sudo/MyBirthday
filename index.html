@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Age Calculator & Memories</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Wendy+One" rel="stylesheet" type="text/css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Background from birthday animation */
+            background-image: radial-gradient(#374566, #010203);
+            overflow-x: hidden; /* Allow vertical scroll, hide horizontal */
+        }
+
+        /* Styles from bday.html for the balloon animation */
+        .balloon-container {
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 50vh;
+            z-index: 1;
+            pointer-events: none; /* Allow clicking through balloons */
+            margin-bottom: 50px; /* Ensure balloons don't overlap with content */
+            display: flex;
+        }
+
+        .balloon {
+            width: 738px;
+            margin: 0 auto;
+            padding-top: 30px;
+            position: relative;
+        }
+        .balloon > div {
+            width: 104px;
+            height: 140px;
+            background: rgba(182, 15, 97, 0.9);
+            border-radius: 80%;
+            margin: 0 auto;
+            position: absolute;
+            padding: 10px;
+            box-shadow: inset 17px 7px 10px rgba(182, 15, 97, 0.9);
+            transform-origin: bottom center;
+        }
+        .balloon > div:nth-child(1) { background: rgba(182, 15, 97, 0.9); left: 0; box-shadow: inset 10px 10px 10px rgba(135, 11, 72, 0.9); animation: balloon1 6s ease-in-out infinite; }
+        .balloon > div:nth-child(1):before { color: rgba(182, 15, 97, 0.9); }
+        .balloon > div:nth-child(2) { background: rgba(242, 112, 45, 0.9); left: 120px; box-shadow: inset 10px 10px 10px rgba(222, 85, 14, 0.9); animation: balloon2 6s ease-in-out infinite; }
+        .balloon > div:nth-child(2):before { color: rgba(242, 112, 45, 0.9); }
+        .balloon > div:nth-child(3) { background: rgba(45, 181, 167, 0.9); left: 240px; box-shadow: inset 10px 10px 10px rgba(35, 140, 129, 0.9); animation: balloon4 6s ease-in-out infinite; }
+        .balloon > div:nth-child(3):before { color: rgba(45, 181, 167, 0.9); }
+        .balloon > div:nth-child(4) { background: rgba(190, 61, 244, 0.9); left: 360px; box-shadow: inset 10px 10px 10px rgba(173, 14, 240, 0.9); animation: balloon1 5s ease-in-out infinite; }
+        .balloon > div:nth-child(4):before { color: rgba(190, 61, 244, 0.9); }
+        .balloon > div:nth-child(5) { background: rgba(180, 224, 67, 0.9); left: 480px; box-shadow: inset 10px 10px 10px rgba(158, 206, 34, 0.9); animation: balloon3 5s ease-in-out infinite; }
+        .balloon > div:nth-child(5):before { color: rgba(180, 224, 67, 0.9); }
+        .balloon > div:nth-child(6) { background: rgba(242, 194, 58, 0.9); left: 600px; box-shadow: inset 10px 10px 10px rgba(234, 177, 15, 0.9); animation: balloon2 3s ease-in-out infinite; }
+        .balloon > div:nth-child(6):before { color: rgba(242, 194, 58, 0.9); }
+        .balloon > div:before { content:"▲"; position: absolute; bottom: -11px; left: 52px; font-size: 1em; }
+        .balloon-text { font-family:'Wendy One', sans-serif; font-size: 4.8em; color: white; position: relative; top: 30px; left: 50%; margin-left: -27px; text-transform: uppercase; }
+
+        /* Balloon Animations */
+        @keyframes balloon1 { 0%, 100% { transform: translateY(0) rotate(-6deg); } 50% { transform: translateY(-20px) rotate(8deg); } }
+        @keyframes balloon2 { 0%, 100% { transform: translateY(0) rotate(6deg); } 50% { transform: translateY(-30px) rotate(-8deg); } }
+        @keyframes balloon3 { 0%, 100% { transform: translate(0, -10px) rotate(6deg); } 50% { transform: translate(-20px, 30px) rotate(-8deg); } }
+        @keyframes balloon4 { 0%, 100% { transform: translate(10px, -10px) rotate(-8deg); } 50% { transform: translate(-15px, 10px) rotate(10deg); } }
+
+        /* Main content styling */
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Photo Album Styles */
+        .photo-album {
+            padding: 4rem 2rem;
+            max-width: 1400px;
+            margin: 4rem auto 0 auto;
+            position: relative;
+            z-index: 20;
+        }
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .photo-item {
+            opacity: 0;
+            transform: translateY(50px) scale(0.9);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 3px solid rgba(255, 255, 255, 0.1);
+        }
+        .photo-item.is-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .photo-item:hover img {
+            transform: scale(1.1);
+        }
+        /* Style for the unmute button */
+        #unmuteButton {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            z-index: 1000; /* Ensure it's on top */
+        }
+    </style>
+</head>
+<!--To stop music from playing Enter this is Console =
+const music = document.getElementById('background-music');
+if (music) {
+    music.pause();
+    music.currentTime = 0;
+}
+To start music again Enter this in Console =
+const music = document.getElementById('background-music');
+if (music) {
+    music.play();
+    music.currentTime = 0;
+}
+
+-->>
+<body class="min-h-screen">
+
+    <audio id="background-music" src="happybdaybgs.mp3" loop muted></audio>
+
+    <button id="unmuteButton" style="display: none;">Play Music</button>
+
+    <div class="balloon-container">
+        <div class="balloon">
+            <div><span class="balloon-text">☺</span></div>
+            <div><span class="balloon-text">B</span></div>
+            <div><span class="balloon-text">D</span></div>
+            <div><span class="balloon-text">A</span></div>
+            <div><span class="balloon-text">Y</span></div>
+            <div><span class="balloon-text">!</span></div>
+        </div>
+    </div>
+
+    <div class="w-full flex items-center justify-center min-h-screen content-wrapper">
+        <div class="w-full max-w-4xl mx-auto p-4 md:p-8">
+            <div class="bg-gray-800 bg-opacity-70 backdrop-blur-sm shadow-2xl rounded-2xl p-6 md:p-10 border border-gray-700">
+                <h1 class="text-3xl md:text-5xl font-extrabold text-white text-center mb-2">
+                    Our Journey So Far
+                </h1>
+                <p class="text-center text-gray-300 mb-8 md:mb-12 text-lg">
+                    Counting every moment since June 26, 2014 at 11:35 AM
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 text-center">
+                    <div class="bg-gray-700 bg-opacity-80 p-4 rounded-lg shadow-inner"><div id="years" class="text-4xl md:text-6xl font-bold text-cyan-400">0</div><div class="text-gray-300 mt-1 text-sm md:text-base">Years</div></div>
+                    <div class="bg-gray-700 bg-opacity-80 p-4 rounded-lg shadow-inner"><div id="months" class="text-4xl md:text-6xl font-bold text-cyan-400">0</div><div class="text-gray-300 mt-1 text-sm md:text-base">Months</div></div>
+                    <div class="bg-gray-700 bg-opacity-80 p-4 rounded-lg shadow-inner"><div id="days" class="text-4xl md:text-6xl font-bold text-cyan-400">0</div><div class="text-gray-300 mt-1 text-sm md:text-base">Days</div></div>
+                    <div class="bg-gray-700 bg-opacity-80 p-4 rounded-lg shadow-inner"><div id="hours" class="text-4xl md:text-6xl font-bold text-cyan-400">0</div><div class="text-gray-300 mt-1 text-sm md:text-base">Hours</div></div>
+                    <div class="bg-gray-700 bg-opacity-80 p-4 rounded-lg shadow-inner"><div id="minutes" class="text-4xl md:text-6xl font-bold text-cyan-400">0</div><div class="text-gray-300 mt-1 text-sm md:text-base">Minutes</div></div>
+                </div>
+                <h2 class="text-center text-white text-4xl mt-10" style="font-family:'Wendy One', sans-serif;">Kartik</h2>
+            </div>
+            <h3 class="text-center text-white text-2xl mt-12 animate-pulse">Scroll Down To See The Memories</h3>
+        </div>
+    </div>
+
+    <section class="photo-album">
+        <h2 class="text-5xl font-bold text-white text-center mb-12" style="font-family:'Wendy One', sans-serif;">Our Photo Album</h2>
+        <div class="photo-grid">
+            <div class="photo-item"><img src="1.jpg" alt="Memory 1"></div>
+<div class="photo-item"><img src="2.jpg" alt="Memory 2"></div>
+<div class="photo-item"><img src="3.jpg" alt="Memory 3"></div>
+<div class="photo-item"><img src="4.jpg" alt="Memory 4"></div>
+<div class="photo-item"><img src="5.jpg" alt="Memory 5"></div>
+<div class="photo-item"><img src="6.jpg" alt="Memory 6"></div>
+<div class="photo-item"><img src="7.jpg" alt="Memory 7"></div>
+<div class="photo-item"><img src="8.jpg" alt="Memory 8"></div>
+<div class="photo-item"><img src="9.jpg" alt="Memory 9"></div>
+<div class="photo-item"><img src="10.jpg" alt="Memory 10"></div>
+<div class="photo-item"><img src="11.jpg" alt="Memory 11"></div>
+<div class="photo-item"><img src="12.jpg" alt="Memory 12"></div>
+<div class="photo-item"><img src="13.jpg" alt="Memory 13"></div>
+<div class="photo-item"><img src="14.jpg" alt="Memory 14"></div>
+<div class="photo-item"><img src="15.jpg" alt="Memory 15"></div>
+<div class="photo-item"><img src="16.jpg" alt="Memory 16"></div>
+<div class="photo-item"><img src="17.jpg" alt="Memory 17"></div>
+<div class="photo-item"><img src="18.jpg" alt="Memory 18"></div>
+<div class="photo-item"><img src="19.jpg" alt="Memory 19"></div>
+<div class="photo-item"><img src="20.jpg" alt="Memory 20"></div>
+<div class="photo-item"><img src="21.jpg" alt="Memory 21"></div>
+
+        </div>
+    </section>
+
+    <script>
+        // --- Age Calculation Logic ---
+        const startDate = new Date('2014-06-26T11:35:00Z');
+        const yearsEl = document.getElementById('years');
+        const monthsEl = document.getElementById('months');
+        const daysEl = document.getElementById('days');
+        const hoursEl = document.getElementById('hours');
+        const minutesEl = document.getElementById('minutes');
+
+        function calculateAge() {
+            const now = new Date();
+            let c_years = now.getUTCFullYear(), c_months = now.getUTCMonth(), c_days = now.getUTCDate(), c_hours = now.getUTCHours(), c_minutes = now.getUTCMinutes(), c_seconds = now.getUTCSeconds(); 
+            let s_years = startDate.getUTCFullYear(), s_months = startDate.getUTCMonth(), s_days = startDate.getUTCDate(), s_hours = startDate.getUTCHours(), s_minutes = startDate.getUTCMinutes();
+
+            let seconds_diff = c_seconds - startDate.getUTCSeconds();
+            if (seconds_diff < 0) { c_minutes--; seconds_diff += 60; }
+            let minutes_diff = c_minutes - s_minutes;
+            if (minutes_diff < 0) { c_hours--; minutes_diff += 60; }
+            let hours_diff = c_hours - s_hours;
+            if (hours_diff < 0) { c_days--; hours_diff += 24; }
+            let days_diff = c_days - s_days;
+            if (days_diff < 0) { c_months--; days_diff += new Date(c_years, c_months + 1, 0).getUTCDate(); }
+            let months_diff = c_months - s_months;
+            if (months_diff < 0) { c_years--; months_diff += 12; }
+            let years_diff = c_years - s_years;
+
+            yearsEl.textContent = years_diff;
+            monthsEl.textContent = months_diff;
+            daysEl.textContent = days_diff;
+            hoursEl.textContent = hours_diff.toString().padStart(2, '0');
+            minutesEl.textContent = minutes_diff.toString().padStart(2, '0');
+        }
+        setInterval(calculateAge, 1000);
+        calculateAge();
+
+        // --- Photo Gallery Scroll Animation Logic ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    // Apply a staggered delay for a "super animatic" effect
+                    entry.target.style.transitionDelay = `${index * 100}ms`;
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target); // Stop observing once visible
+                }
+            });
+        }, { threshold: 0.1 }); // Trigger when 10% of the item is visible
+
+        const photoItems = document.querySelectorAll('.photo-item');
+        photoItems.forEach(item => observer.observe(item));
+
+        // --- Audio Playback with a user-triggered unmute button ---
+        window.onload = function() {
+            console.log("Made on 16th June 2024 by Aditya");
+        console.log("Page loaded, setting up audio playback...");
+            const backgroundMusic = document.getElementById('background-music');
+            const unmuteButton = document.getElementById('unmuteButton');
+
+            if (backgroundMusic) {
+                // Try to play muted audio immediately
+                backgroundMusic.play().catch(error => {
+                    console.log("Muted autoplay prevented (this is common and often fine if we show an unmute button):", error);
+                    // If even muted autoplay is prevented (e.g., in some strict environments),
+                    // ensure the button is visible.
+                    unmuteButton.style.display = 'block';
+                });
+
+                // Show the unmute button if the music is muted after an initial attempt
+                if (backgroundMusic.muted || backgroundMusic.paused) {
+                    unmuteButton.style.display = 'block';
+                }
+
+                // Event listener for the unmute button
+                unmuteButton.addEventListener('click', () => {
+                    if (backgroundMusic.muted) {
+                        backgroundMusic.muted = false;
+                        backgroundMusic.play().catch(error => {
+                            console.log("Failed to play on unmute click:", error);
+                            // This catch block should ideally not be hit after a user click
+                        });
+                        unmuteButton.textContent = "Music On"; // Optional: change button text
+                    } else {
+                         backgroundMusic.muted = true;
+                         unmuteButton.textContent = "Unmute Music"; // Optional: change button text
+                    }
+                    // Hide the button after it's clicked, or change its text to reflect status
+                    unmuteButton.style.display = 'none'; // You might want to keep it visible as a toggle
+                });
+
+                // Optional: Make the button reappear if the music somehow pauses or becomes muted again
+                backgroundMusic.addEventListener('pause', () => {
+                    if (backgroundMusic.muted) {
+                        unmuteButton.style.display = 'block';
+                        unmuteButton.textContent = "Unmute Music";
+                    }
+                });
+                backgroundMusic.addEventListener('volumechange', () => {
+                    if (backgroundMusic.muted && backgroundMusic.paused) { // Check both muted and paused for button display
+                         unmuteButton.style.display = 'block';
+                         unmuteButton.textContent = "Unmute Music";
+                    }
+                });
+            }
+        };
+    </script>
+</body>
+</html>
