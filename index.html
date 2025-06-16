@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Birthday Boy 🎉</title>
+    <title>Birthday Boy 🎉 </title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Wendy+One" rel="stylesheet" type="text/css">
@@ -14,6 +14,53 @@
             background-attachment: fixed;
             overflow-x: hidden;
             position: relative;
+            cursor: none; /* Hide default cursor for custom effect */
+        }
+
+        /* Custom Cursor */
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.2) 70%, transparent 100%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s ease;
+        }
+
+        .custom-cursor-trail {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, rgba(102,126,234,0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transition: all 0.2s ease;
+        }
+
+        /* Interactive Background Ripples */
+        .cursor-ripple {
+            position: fixed;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 50%, transparent 70%);
+            pointer-events: none;
+            z-index: 2;
+            animation: rippleExpand 1s ease-out forwards;
+        }
+
+        @keyframes rippleExpand {
+            0% {
+                width: 0px;
+                height: 0px;
+                opacity: 1;
+            }
+            100% {
+                width: 200px;
+                height: 200px;
+                opacity: 0;
+            }
         }
 
         /* Enhanced background with animated particles */
@@ -38,6 +85,23 @@
             50% { opacity: 0.8; transform: scale(1.05); }
         }
 
+        /* Interactive Background Distortion */
+        .background-distortion {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+                    rgba(255,255,255,0.1) 0%, 
+                    rgba(255,255,255,0.05) 20%, 
+                    transparent 50%);
+            z-index: 1;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
         /* Floating particles */
         .floating-particles {
             position: fixed;
@@ -54,6 +118,10 @@
             background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%);
             border-radius: 50%;
             animation: float 15s infinite linear;
+        }
+
+        .particle.interactive {
+            transition: transform 0.3s ease;
         }
 
         .particle:nth-child(1) { width: 4px; height: 4px; left: 10%; animation-delay: 0s; }
@@ -112,11 +180,162 @@
             backdrop-filter: blur(10px);
             border: 2px solid rgba(255, 255, 255, 0.2);
             transition: all 0.3s ease;
+            pointer-events: auto; /* Enable clicking */
+            cursor: pointer;
         }
 
         .balloon > div:hover {
-            transform: scale(1.1) translateY(-10px);
-            filter: brightness(1.2);
+            transform: scale(1.15) translateY(-15px);
+            filter: brightness(1.3);
+            cursor: pointer;
+        }
+
+        /* Balloon Pop Animation */
+        .balloon-popping {
+            animation: balloonPop 0.3s ease-out forwards;
+        }
+
+        @keyframes balloonPop {
+            0% { 
+                transform: scale(1); 
+                opacity: 1; 
+            }
+            50% { 
+                transform: scale(1.3); 
+                opacity: 0.8; 
+            }
+            100% { 
+                transform: scale(0); 
+                opacity: 0; 
+            }
+        }
+
+        /* Balloon Restoration Animation */
+        .balloon-restoring {
+            animation: balloonRestore 2s ease-out forwards;
+        }
+
+        @keyframes balloonRestore {
+            0% { 
+                transform: scale(0) translateX(-200px); 
+                opacity: 0; 
+            }
+            30% { 
+                transform: scale(0.3) translateX(-100px); 
+                opacity: 0.5; 
+            }
+            60% { 
+                transform: scale(0.7) translateX(-50px); 
+                opacity: 0.8; 
+            }
+            80% { 
+                transform: scale(1.1) translateX(0px); 
+                opacity: 1; 
+            }
+            100% { 
+                transform: scale(1) translateX(0px); 
+                opacity: 1; 
+            }
+        }
+
+        /* Balloon Flying Back Animation */
+        .balloon-flying {
+            animation: balloonFly 1.5s ease-out forwards;
+        }
+
+        @keyframes balloonFly {
+            0% { 
+                transform: translateY(100px) translateX(-100px) scale(0.8); 
+                opacity: 0.7; 
+            }
+            50% { 
+                transform: translateY(-20px) translateX(-30px) scale(1.1); 
+                opacity: 1; 
+            }
+            100% { 
+                transform: translateY(0) translateX(0) scale(1); 
+                opacity: 1; 
+            }
+        }
+
+        /* Pump Animation */
+        .balloon-pump {
+            position: absolute;
+            left: -150px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 60px;
+            height: 80px;
+            background: linear-gradient(135deg, #444, #666);
+            border-radius: 10px;
+            opacity: 0;
+            z-index: 10;
+        }
+
+        .balloon-pump::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 30px;
+            background: linear-gradient(135deg, #333, #555);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+        }
+
+        .balloon-pump::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            right: -30px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 5px 30px 5px 0;
+            border-color: transparent #888 transparent transparent;
+        }
+
+        .balloon-pump.active {
+            animation: pumpAction 2s ease-out forwards;
+        }
+
+        @keyframes pumpAction {
+            0% { opacity: 0; transform: translateY(-50%) scale(0.8); }
+            20% { opacity: 1; transform: translateY(-50%) scale(1); }
+            40% { transform: translateY(-50%) scale(1.1); }
+            60% { transform: translateY(-50%) scale(0.9); }
+            80% { transform: translateY(-50%) scale(1.05); }
+            100% { opacity: 0; transform: translateY(-50%) scale(1); }
+        }
+
+        /* Pop Burst Effect */
+        .pop-burst {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .pop-particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: burstParticle 0.6s ease-out forwards;
+        }
+
+        @keyframes burstParticle {
+            0% { 
+                transform: translate(0, 0) scale(1); 
+                opacity: 1; 
+            }
+            100% { 
+                transform: translate(var(--dx), var(--dy)) scale(0); 
+                opacity: 0; 
+            }
         }
 
         .balloon > div:nth-child(1) { 
@@ -177,6 +396,7 @@
             text-transform: uppercase;
             text-shadow: 0 2px 10px rgba(0,0,0,0.5);
             animation: textGlow 2s ease-in-out infinite alternate;
+            pointer-events: none;
         }
 
         @keyframes textGlow {
@@ -515,6 +735,14 @@
                 padding: 10px 20px;
                 font-size: 0.9em;
             }
+
+            body {
+                cursor: auto; /* Show default cursor on mobile */
+            }
+
+            .custom-cursor, .custom-cursor-trail {
+                display: none; /* Hide custom cursor on mobile */
+            }
         }
 
         /* Loading animation */
@@ -582,20 +810,27 @@
         <div class="loading-spinner"></div>
     </div>
 
+    <!-- Custom Cursor -->
+    <div class="custom-cursor" id="customCursor"></div>
+    <div class="custom-cursor-trail" id="customCursorTrail"></div>
+
+    <!-- Interactive Background Distortion -->
+    <div class="background-distortion" id="backgroundDistortion"></div>
+
     <!-- Scroll Progress Bar -->
     <div class="scroll-progress" id="scrollProgress"></div>
 
     <!-- Floating Particles -->
-    <div class="floating-particles">
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
+    <div class="floating-particles" id="floatingParticles">
+        <div class="particle interactive"></div>
+        <div class="particle interactive"></div>
+        <div class="particle interactive"></div>
+        <div class="particle interactive"></div>
+        <div class="particle interactive"></div>
+        <div class="particle interactive"></div>
+        <div class="particle interactive"></div>
+        <div class="particle interactive"></div>
+        <div class="particle interactive"></div>
     </div>
 
     <audio id="background-music" src="happybdaybgs.mp3" loop muted></audio>
@@ -608,13 +843,31 @@
     </button>
 
     <div class="balloon-container" id="balloonContainer">
-        <div class="balloon">
-            <div><span class="balloon-text">☺</span></div>
-            <div><span class="balloon-text">B</span></div>
-            <div><span class="balloon-text">D</span></div>
-            <div><span class="balloon-text">A</span></div>
-            <div><span class="balloon-text">Y</span></div>
-            <div><span class="balloon-text">!</span></div>
+        <div class="balloon" id="balloonGroup">
+            <div data-balloon="0" data-letter="☺" data-color="rgba(182, 15, 97, 0.9)">
+                <span class="balloon-text">☺</span>
+                <div class="balloon-pump"></div>
+            </div>
+            <div data-balloon="1" data-letter="B" data-color="rgba(242, 112, 45, 0.9)">
+                <span class="balloon-text">B</span>
+                <div class="balloon-pump"></div>
+            </div>
+            <div data-balloon="2" data-letter="D" data-color="rgba(45, 181, 167, 0.9)">
+                <span class="balloon-text">D</span>
+                <div class="balloon-pump"></div>
+            </div>
+            <div data-balloon="3" data-letter="A" data-color="rgba(190, 61, 244, 0.9)">
+                <span class="balloon-text">A</span>
+                <div class="balloon-pump"></div>
+            </div>
+            <div data-balloon="4" data-letter="Y" data-color="rgba(180, 224, 67, 0.9)">
+                <span class="balloon-text">Y</span>
+                <div class="balloon-pump"></div>
+            </div>
+            <div data-balloon="5" data-letter="!" data-color="rgba(242, 194, 58, 0.9)">
+                <span class="balloon-text">!</span>
+                <div class="balloon-pump"></div>
+            </div>
         </div>
     </div>
 
@@ -683,6 +936,179 @@
     </section>
 
     <script>
+        // --- Interactive Cursor System ---
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+        let trailX = 0, trailY = 0;
+
+        const customCursor = document.getElementById('customCursor');
+        const customCursorTrail = document.getElementById('customCursorTrail');
+        const backgroundDistortion = document.getElementById('backgroundDistortion');
+        const particles = document.querySelectorAll('.particle.interactive');
+
+        // Smooth cursor following
+        function animateCursor() {
+            cursorX += (mouseX - cursorX) * 0.3;
+            cursorY += (mouseY - cursorY) * 0.3;
+            trailX += (mouseX - trailX) * 0.1;
+            trailY += (mouseY - trailY) * 0.1;
+
+            if (customCursor) {
+                customCursor.style.left = cursorX - 10 + 'px';
+                customCursor.style.top = cursorY - 10 + 'px';
+            }
+
+            if (customCursorTrail) {
+                customCursorTrail.style.left = trailX - 20 + 'px';
+                customCursorTrail.style.top = trailY - 20 + 'px';
+            }
+
+            requestAnimationFrame(animateCursor);
+        }
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+
+            // Update background distortion
+            if (backgroundDistortion) {
+                const x = (e.clientX / window.innerWidth) * 100;
+                const y = (e.clientY / window.innerHeight) * 100;
+                backgroundDistortion.style.setProperty('--mouse-x', x + '%');
+                backgroundDistortion.style.setProperty('--mouse-y', y + '%');
+            }
+
+            // Interactive particles
+            particles.forEach((particle, index) => {
+                const rect = particle.getBoundingClientRect();
+                const particleX = rect.left + rect.width / 2;
+                const particleY = rect.top + rect.height / 2;
+                const distance = Math.sqrt((e.clientX - particleX) ** 2 + (e.clientY - particleY) ** 2);
+                
+                if (distance < 150) {
+                    const force = (150 - distance) / 150;
+                    const angleX = (e.clientX - particleX) / distance;
+                    const angleY = (e.clientY - particleY) / distance;
+                    particle.style.transform = `translate(${angleX * force * 20}px, ${angleY * force * 20}px)`;
+                } else {
+                    particle.style.transform = 'translate(0, 0)';
+                }
+            });
+
+            // Create ripple effect
+            createRipple(e.clientX, e.clientY);
+        });
+
+        // Create ripple effect
+        function createRipple(x, y) {
+            if (Math.random() > 0.7) { // Only create ripples occasionally
+                const ripple = document.createElement('div');
+                ripple.className = 'cursor-ripple';
+                ripple.style.left = x - 100 + 'px';
+                ripple.style.top = y - 100 + 'px';
+                document.body.appendChild(ripple);
+
+                setTimeout(() => {
+                    document.body.removeChild(ripple);
+                }, 1000);
+            }
+        }
+
+        // Start cursor animation
+        if (window.innerWidth > 768) {
+            animateCursor();
+        }
+
+        // --- Balloon Pop & Restoration System ---
+        const balloons = document.querySelectorAll('[data-balloon]');
+        const balloonStates = new Map(); // Track balloon states
+
+        balloons.forEach((balloon, index) => {
+            balloonStates.set(index, { isPopped: false, isRestoring: false });
+            
+            balloon.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const state = balloonStates.get(index);
+                if (state.isPopped || state.isRestoring) return;
+                
+                popBalloon(balloon, index);
+            });
+        });
+
+        function popBalloon(balloon, index) {
+            const state = balloonStates.get(index);
+            state.isPopped = true;
+            
+            // Create burst effect
+            createBurstEffect(balloon);
+            
+            // Pop animation
+            balloon.classList.add('balloon-popping');
+            
+            // Schedule restoration
+            setTimeout(() => {
+                restoreBalloon(balloon, index);
+            }, 1000);
+        }
+
+        function createBurstEffect(balloon) {
+            const burst = document.createElement('div');
+            burst.className = 'pop-burst';
+            balloon.appendChild(burst);
+            
+            // Create multiple burst particles
+            for (let i = 0; i < 8; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'pop-particle';
+                
+                const angle = (i / 8) * Math.PI * 2;
+                const distance = 50 + Math.random() * 30;
+                const dx = Math.cos(angle) * distance;
+                const dy = Math.sin(angle) * distance;
+                
+                particle.style.setProperty('--dx', dx + 'px');
+                particle.style.setProperty('--dy', dy + 'px');
+                
+                burst.appendChild(particle);
+            }
+            
+            // Remove burst effect
+            setTimeout(() => {
+                balloon.removeChild(burst);
+            }, 600);
+        }
+
+        function restoreBalloon(balloon, index) {
+            const state = balloonStates.get(index);
+            state.isRestoring = true;
+            
+            // Remove pop class
+            balloon.classList.remove('balloon-popping');
+            
+            // Show pump animation
+            const pump = balloon.querySelector('.balloon-pump');
+            pump.classList.add('active');
+            
+            // Start restoration animation
+            balloon.classList.add('balloon-restoring');
+            
+            setTimeout(() => {
+                // Remove restoration class and add flying animation
+                balloon.classList.remove('balloon-restoring');
+                balloon.classList.add('balloon-flying');
+                
+                setTimeout(() => {
+                    // Reset balloon to normal state
+                    balloon.classList.remove('balloon-flying');
+                    pump.classList.remove('active');
+                    state.isPopped = false;
+                    state.isRestoring = false;
+                }, 1500);
+            }, 2000);
+        }
+
         // --- Enhanced Loading Animation ---
         window.addEventListener('load', function() {
             setTimeout(() => {
@@ -914,8 +1340,10 @@
             }
         }
 
-        console.log("Enhanced mobile-optimized birthday page loaded successfully! 🎉");
-        console.log("Features: Enhanced animations, parallax scrolling, music toggle, scroll animations, touch gestures");
+        console.log("🎉 Interactive birthday page loaded with amazing features!");
+        console.log("✨ Features: Clickable balloons, cursor effects, enhanced animations, music toggle!");
+        console.log("🎈 Click any balloon to see the pop & restoration animation!");
+        console.log("🖱️ Move your cursor around to see the interactive background effects!");
     </script>
 </body>
 </html>
